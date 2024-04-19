@@ -1,6 +1,3 @@
-import sys
-import threading
-import tkinter as tk
 import time
 import win32gui
 import win32process
@@ -8,7 +5,6 @@ import psutil
 import json
 import constants
 import interface
-import tkinter.font as tkFont
 from tkinter import filedialog
 import os
 import queue
@@ -68,9 +64,9 @@ def save_total_time(json_file_path, total_time):
     except FileNotFoundError:
         data = {}
 
-    # Assurez-vous que current_song_name est défini
+    # chack that current_song_name is defined
     if current_song_name:
-        # Ajoutez ou mettez à jour la valeur total_time associée à current_song_name
+        # update total_time linked to current_song_name
         if current_song_name in data:
             data[current_song_name]["total_time"] = total_time
         else:
@@ -80,13 +76,13 @@ def save_total_time(json_file_path, total_time):
         json.dump(data,file)
 
 
-# Fonction pour logger les messages
+# log function
 def write_log(message):
     with open(constants.log_file_path, "a") as log_file:
         log_file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - "+ message +"\n")
         log_file.flush()
 
-# Fonction pour démarrer le compteur
+# Start the counter
 def start_counter():
     global is_tracking
     global start_time
@@ -113,7 +109,7 @@ def start_counter():
     total_elapsed_time = load_total_time(constants.json_file_path)
     update_counter(target_process_pid, constants.target_window_title, constants.json_file_path)
 
-# Fonction pour mettre à jour le compteur en temps réel
+# update the counter in real time
 def update_counter(target_process_pid, target_window_title, json_file_path):
     #write_log("Début du tracking")
     global is_tracking
@@ -147,7 +143,7 @@ def update_counter(target_process_pid, target_window_title, json_file_path):
 
                 interface.update_counter_label(total_elapsed_time)
 
-            # Vérifiez si un message d'arrêt a été reçu
+            # check if a stop signal is received
             try:
                 stop_signal = stop_queue.get_nowait()
                 if stop_signal:
@@ -156,11 +152,11 @@ def update_counter(target_process_pid, target_window_title, json_file_path):
                     interface.update_counter_label(total_elapsed_time)
                     interface.update_status_value(constants.status_stopped)
                     interface.update_state_start_button("normal")
-                break  # Quittez la boucle si un message d'arrêt a été reçu
+                break
             except queue.Empty:
-                pass  # Gérez le cas où la queue est vide
+                pass
 
-            time.sleep(1)  # Attendez une seconde avant de vérifier à nouveau
+            time.sleep(1)  # wait 1 second before checking again
     except KeyboardInterrupt:
         print("Good Bye")
 
@@ -172,10 +168,9 @@ def reset_counter():
 
 def stop_counter():
     try:
-        # Envoyez un message à la queue indiquant d'arrêter la boucle
         stop_queue.put(True)
     except queue.Full:
-        pass  # Gérez le cas où la queue est pleine
+        pass
 
 def open_directory_dialog():
     selected_directory = filedialog.askdirectory()
@@ -186,11 +181,8 @@ def open_directory_dialog():
         with open(infodatfile, "r") as file:
             data = json.load(file)
             current_song_name = data["_songName"]
-        # Faites quelque chose avec le dossier sélectionné, par exemple, l'afficher dans un label
         if current_song_name:
             #write_log(f"map sélectionnée : {current_song_name}")
-
-            # Mettez à jour l'interface utilisateur avec le chemin du dossier sélectionné
             interface.update_directory_label(current_song_name)
 
     except FileNotFoundError:

@@ -1,17 +1,16 @@
-# Titre de la fenêtre cible et du processus
+# Name of the target window
 target_window_title = "Edda"
 
-#Titre du process pour recuperer le PID
+# Name of the targeted process to get the PID
 target_process_title = "Edda.exe"
 
-# Chemin du fichier de données
+# name of the data file
 json_file_path = "eddatimer_data.json"
 
-# Chemin du fichier de données
+# output file
 log_file_path = "output.log"
 
+# status of tracking
 status_active = "TRACKING"
-
 status_inactive = "PAUSED"
-
 status_stopped = "STOPPED"
